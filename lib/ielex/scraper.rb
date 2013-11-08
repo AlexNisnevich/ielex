@@ -85,12 +85,13 @@ module IELex
     #   ])
     def get_all(klass, path, attr_infos, elt = "table", elt_num = 0)
       page = open_with_cache(path)
+      contents = page.css('#contentmain')
 
       if elt == "table"
-        rows = page.css('table')[elt_num].css('tr')
+        rows = contents.css('table')[elt_num].css('tr')
         rows = rows[1..-1]
       elsif ["ol", "ul"].include? elt
-        rows = page.css(elt)[elt_num].css('li')
+        rows = contents.css(elt)[elt_num].css('li')
       end
 
       results = rows.map do |row|

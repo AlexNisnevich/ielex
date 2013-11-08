@@ -3,7 +3,7 @@ module IELex
   class SemanticField < IELexObject
     extend IELexClass
 
-    attr_accessor :id, :name, :description, :path
+    attr_accessor :name, :description, :path
     attr_inspector :name, :description, :path
 
     # Returns all Reconstructions corresponding to this SemanticField
@@ -17,18 +17,33 @@ module IELex
     #  ])
     #end
 
+    # Returns all Subcategories corresponding to this SemanticField
+    # @return [Array<Subcategory>] array of Subcategories corresponding to this SemanticField
+    def subcategories
+      @subcategories ||= Scraper.instance.get_all(Subcategory, @path, [
+        [:code, 'text()'],
+        [:name, 'a/text()'],
+        [:path, 'a/@href'],
+        [:semantic_field, nil, lambda {|x| self}]
+      ], "ul")
+    end
+
+    def reconstructions
+      subcategories
+        .select {|s| s.path != ''}
+        .map {|s| s.reconstructions}
+        .inject(&:+)
+    end
+
     # Returns all SemanticFields in IELex.
     # @return [Array<SemanticField>] array of SemanticFields in IELex
     def self.all
       @semantic_fields ||= Scraper.instance.get_all(SemanticField,
-        "http://www.utexas.edu/cola/centers/lrc/iedocctr/ie-ling/ie-sem/index.html",
-        [
-          [:name, 'a/text()'],
-          [:description, 'a/position()'],
-          [:path, 'a/@href']
-        ],
-        "ol"
-      )
+        "http://www.utexas.edu/cola/centers/lrc/iedocctr/ie-ling/ie-sem/index.html", [
+        [:name, 'a/text()'],
+        [:description, 'a/@title'],
+        [:path, 'a/@href']
+      ], "ol")
     end
 
     # Counts the number of SemanticFields within IELex
