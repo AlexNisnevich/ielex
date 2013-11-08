@@ -16,7 +16,8 @@ require 'pp'
   'scraper',
   'semantic_field',
   'subcategory',
-  'reconstruction'
+  'reconstruction',
+  'entry'
 ].each do |file|
   require File.dirname(__FILE__) + "/ielex/#{file}.rb"
 end
