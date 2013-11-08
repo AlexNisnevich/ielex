@@ -19,7 +19,7 @@ module IELex
             .match(/'(.*)'/)[1]
         }],
         [:semantic_field, nil, lambda {|x| @semantic_field}]
-      ], "ul")
+      ], "ul").select {|r| r.path != ''}
     end
   end
 end
