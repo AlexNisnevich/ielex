@@ -23,7 +23,7 @@ json = reconstructions.map {|r|
         r.map {|e| {e.language => e.gloss.split(",").map(&:strip)} }
          .reduce({}) {|accum, obj| accum.merge(obj) {|key, old, new| old + new} },
       'pos' =>
-        r.map {|e| e.gloss.split(",").map {|g| [g.strip, e.pos]}.reduce(&:+)}
+        r.map {|e| e.gloss.split(",").map {|g| [g.strip, e.pos]}}.reduce(&:+)
     } 
   }
 }.inject(&:merge).to_json
