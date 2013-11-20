@@ -18,12 +18,12 @@ json = reconstructions.map {|r|
   r = r.select {|e| e.language != 'English'}
   {r.first.protoform.protoform => 
     {'meanings' => 
-        r.map {|entry| entry.gloss.split(",").map(&:strip) }.inject(&:+).uniq,
+        r.map {|entry| entry.gloss.split(/[\,\;]/).map(&:strip) }.inject(&:+).uniq,
      'observed_reflexes' => 
-        r.map {|e| {e.language => e.gloss.split(",").map(&:strip)} }
+        r.map {|e| {e.language => e.gloss.split(/[\,\;]/).map(&:strip)} }
          .reduce({}) {|accum, obj| accum.merge(obj) {|key, old, new| old + new} },
       'pos' =>
-        r.map {|e| e.gloss.split(",").map {|g| [g.strip, e.pos]}}.reduce(&:+)
+        r.map {|e| e.gloss.split(/[\,\;]/).map {|g| [g.strip, e.pos]}}.reduce(&:+)
     } 
   }
 }.inject(&:merge).to_json
