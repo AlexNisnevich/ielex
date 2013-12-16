@@ -7,9 +7,20 @@ module IELex
     attr_inspector :protoform, :path, :description
 
     def etymon
-      @etymon ||= Scraper.instance.get(@path, [
-        [:etymon, 'p[4]/text()[last()]']
-      ])[:etymon]
+      begin
+        @etymon_candidates ||= Scraper.instance.get(@path, [
+          [:bold, "p[starts-with(b,'Pokorny')]/b[2]/text()"],
+          [:last, "p[starts-with(b,'Pokorny')]/text()[last()]"]
+        ])
+
+        if @etymon_candidates[:bold] != ""
+          @etymon_candidates[:bold]
+        else
+          @etymon_candidates[:last]
+        end
+      rescue
+        ""
+      end
     end
 
     def entries
