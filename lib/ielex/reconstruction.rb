@@ -6,6 +6,12 @@ module IELex
     attr_accessor :protoform, :path, :description, :semantic_field
     attr_inspector :protoform, :path, :description
 
+    def etymon
+      @etymon ||= Scraper.instance.get(@path, [
+        [:etymon, 'p[4]/text()[last()]']
+      ])[:etymon]
+    end
+
     def entries
       @lang = ''
 
